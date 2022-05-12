@@ -1,5 +1,5 @@
 
-public struct TimeService
+public struct TimeComponent
 {
     public float Time;
     public float DeltaTime;

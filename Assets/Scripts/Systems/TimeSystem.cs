@@ -3,21 +3,36 @@ using Leopotam.EcsLite;
 using UnityEngine;
 using Zenject;
 
-public class TimeSystem : IEcsRunSystem
+public class TimeSystem : IEcsRunSystem, IEcsInitSystem
 {
-    private TimeService _ts;
+    private readonly EcsWorld _world;
 
-    public TimeSystem(TimeService ts)
+    public TimeSystem(EcsWorld world)
     {
-        _ts = ts;
+        _world = world;
         Debug.Log("inject");
     }
     
     public void Run(EcsSystems systems)
     {
-        _ts.Time = Time.time;
-        _ts.UnscaledTime = Time.unscaledTime;
-        _ts.DeltaTime = Time.deltaTime;
-        _ts.UnscaledDeltaTime = Time.unscaledDeltaTime;
+        var pool = _world.GetPool<TimeComponent>();
+        var filter = _world.Filter<TimeComponent>().End();
+        foreach (var item in filter)
+        {
+            ref var ts = ref pool.Get(item);
+            
+            ts.Time = Time.time;
+            ts.UnscaledTime = Time.unscaledTime;
+            ts.DeltaTime = Time.deltaTime;
+            ts.UnscaledDeltaTime = Time.unscaledDeltaTime;
+        }
+    }
+
+    public void Init(EcsSystems systems)
+    {
+        
+        var entity = _world.NewEntity();
+        var pool = _world.GetPool<TimeComponent>();
+        pool.Add(entity);
     }
 }

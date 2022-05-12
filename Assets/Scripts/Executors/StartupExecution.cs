@@ -3,21 +3,20 @@ using Leopotam.EcsLite;
 using UnityEngine;
 using Zenject;
 
-public class StartupExecution : IDisposable, ITickable
+public class StartupExecution : IDisposable, ITickable, IInitializable
 {
     private EcsSystems _systems;
     private EcsWorld _world;
 
-    public StartupExecution(EcsWorld ecsWorld, TimeService ts, GameObject prefab, Transform startPoint)
+    public StartupExecution(EcsWorld ecsWorld, TimeSystem ts, 
+        PlayerInitSystem ps, PlayerInputSystem pis, MoveSystem ms)
     {
-        _systems = new EcsSystems(ecsWorld);
         _world = ecsWorld;
-
-        _systems.Add(new TimeSystem(ts));
-        _systems.Add(new CharInitSystem(prefab, startPoint));
-        _systems.Add(new MoveSystem());
-        
-        _systems.Init();
+        _systems = new EcsSystems(_world)
+            .Add(ts)
+            .Add(ps)
+            .Add(pis)
+            .Add(ms);
     }
     
     public void Dispose()
@@ -33,5 +32,10 @@ public class StartupExecution : IDisposable, ITickable
     public void Tick()
     {
         _systems.Run();
+    }
+
+    public void Initialize()
+    {
+        _systems.Init();
     }
 }
