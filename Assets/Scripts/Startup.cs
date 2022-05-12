@@ -19,11 +19,8 @@ public class Startup : MonoInstaller
         Container.Bind<TimeSystem>().AsSingle();
         Container.Bind<PlayerInputSystem>().AsSingle();
         Container.Bind<MoveSystem>().AsSingle();
-        
-        /*
-        Container.Bind<ChangeMovementStateSystem>().AsSingle();
-        Container.Bind<ChangeViewPositionSystem>().AsSingle();
-        Container.Bind<MovementToPositionSystem>().AsSingle();*/
+        Container.Bind<ButtonStepSystem>().AsSingle();
+        Container.Bind<OpenDoorSystem>().AsSingle();
     }
 
     private void BindWorlds()
